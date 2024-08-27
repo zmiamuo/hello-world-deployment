@@ -1,0 +1,31 @@
+replicaCount: 2
+image:
+  repository: oumaimamz/hello-world-app
+  tag: 1.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 80
+
+ingress:
+  enabled: false
+  hostname: hello-world.testenv.com
+
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50
+
+resources:
+  requests:
+    memory: "128Mi"
+    cpu: "250m"
+  limits:
+    memory: "256Mi"
+    cpu: "500m"
+
+networkPolicy:
+  enabled: true
+  cidr: 172.17.0.0/16
