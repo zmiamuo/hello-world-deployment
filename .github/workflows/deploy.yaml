@@ -1,0 +1,34 @@
+name: Deploy on K8s
+
+on:
+  workflow_run:
+    workflows: ["Build & push docker image"]
+    types:
+      - completed
+
+jobs:
+  deploy-manifests:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v1
+      with:
+        version: 'latest'
+    - name: Apply manifests
+      run: |
+        kubectl apply -f k8s-manifests/
+      env:
+        KUBECONFIG: ${{ secrets.KUBECONFIG }}
+
+  deploy-helm:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v1
+      with:
+        version: 'latest'
+    - name: Deploy to Kubernetes using Helm
+      run: |
+        helm upgrade --install hello-world-app ./helloworld-chart
+      env:
+        KUBECONFIG: ${{ secrets.KUBECONFIG }}
