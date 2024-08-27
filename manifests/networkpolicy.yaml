@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-web-traffic
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: hello-world
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - ipBlock:
+        cidr: 172.17.0.0/16  # to be adjusted
+    ports:
+    - protocol: TCP
+      port: 5000
